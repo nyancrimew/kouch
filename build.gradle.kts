@@ -7,6 +7,7 @@ val logback_version: String by project
 
 plugins {
     base
+    maven
     kotlin("jvm") version "1.3.60"
 }
 
@@ -14,7 +15,6 @@ group = "de.letescape"
 version = "0.0.1"
 
 repositories {
-    mavenLocal()
     jcenter()
     maven { url = uri("https://kotlin.bintray.com/ktor") }
     maven { url = uri("https://kotlin.bintray.com/kotlinx") }
@@ -31,6 +31,17 @@ dependencies {
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
 }
 
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        classifier = "sources"
+        from(sourceSets["main"].allSource)
+    }
+
+    artifacts {
+        add("archives", sourcesJar)
+    }
+}
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")
 
